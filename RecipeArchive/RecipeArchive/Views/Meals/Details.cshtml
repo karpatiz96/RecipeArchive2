@@ -1,0 +1,50 @@
+﻿@model RecipeArchive.Models.DataViewModels.MealViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>View Meal</h2>
+
+<div class="media">
+    <div class="media-left">
+        <a href="#">
+            <img class="media-object" src="~/images/text.svg">
+        </a>
+    </div>
+    <div class="media-body">
+        <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <label>Name @Model.Name</label>
+            </div>
+            <div class="col-md-4">
+                <label>Time @Model.MakeTime</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label>Type @Model.MealTypeName</label>
+            </div>
+            <div class="col-md-4">
+                <label>Difficulty </label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label>Stars @Model.Stars</label>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+<h3>Ingredients</h3>
+
+<h3>Preparation</h3>
+<textarea>@Model.Description</textarea>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.MealID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

@@ -1,0 +1,98 @@
+﻿@using RecipeArchive.Models;
+@model RecipeArchive.Models.DataViewModels.HomeMealViewModel;
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Home</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name: <input type="text" name="MealType" value="@ViewData["currentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
+</form>
+@{ 
+    int i = 0;
+}
+@foreach (var mealType in Model.mealTypes) {
+<h3>@mealType.Name</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Stars
+            </th>
+            <th>
+                Picture
+            </th>
+            <th>
+                MealType
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (MealDTO item in Model.meals[i]) {
+        <tr>
+            <td>
+                @item.Name
+            </td>
+            <td>
+                @item.Stars
+            </td>
+            <td>
+                @item.Picture
+            </td>
+            <td>
+                @item.MealTypeName
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.MealID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.MealID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.MealID">Delete</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+    i++;
+}
+
+@{ 
+    var x = 0;
+}
+<div class="container">
+@foreach (var mealType in Model.mealTypes) {
+    <div class="row">
+        <h3>@mealType.Name</h3>
+@foreach (MealDTO item in Model.meals[x]) {
+        <div class="col-md-4">
+            <div class="media">
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object" src="~/images/text.svg">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <a asp-controller="Meals" asp-action="Details" asp-route-id="@item.MealID">@item.Name</a>
+                    <h4>@item.Stars</h4>
+                </div>
+            </div>
+            </div>
+}
+    </div>
+    x++;
+}
+</div>

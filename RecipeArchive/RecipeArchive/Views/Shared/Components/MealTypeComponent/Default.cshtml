@@ -1,0 +1,7 @@
+﻿@using RecipeArchive.Views.Shared.Components.MealTypeComponent
+@model RecipeArchive.Models.DataViewModels.MealTypeViewModel
+
+@foreach (var type in Model.MealTypes)
+{
+    <li><a asp-controller="Meals" asp-action="Type" asp-route-type="@type.Name">@type.Name</a></li>
+}

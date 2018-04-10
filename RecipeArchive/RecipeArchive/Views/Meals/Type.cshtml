@@ -1,0 +1,48 @@
+﻿@using RecipeArchive.Models;
+@using RecipeArchive.Extensions
+@model PaginatedList<RecipeArchive.Models.MealDTO>
+
+@{
+    ViewData["Title"] = "Type";
+}
+<h2>Type</h2>
+
+<div class="container">
+    <div class="row">
+        <h3>Type</h3>
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4">
+                <div class="media">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="media-object" src="~/images/text.svg">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <a asp-controller="Meals" asp-action="Details" asp-route-id="@item.MealID">@item.Name</a>
+                        <h4>@item.Stars</h4>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@{
+    var prevDisabled = !Model.HasPrevious ? "disabled" : "";
+    var nextDisabled = !Model.HasNext ? "disabled" : "";
+}
+
+<a asp-action="Type"
+   asp-route-page="@(Model.Index - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Type"
+   asp-route-page="@(Model.Index + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
