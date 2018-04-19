@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,16 +19,24 @@ namespace RecipeArchive.Models
 
         public int MealID { get; set; }
 
+        [DisplayName("Type")]
         public int MealTypeID { get; set; }
 
+        [DisplayName("Difficulty")]
         public DifficultyStates Difficulty { get; set; }
 
+        [DisplayName("Name")]
         public string Name { get; set; }
 
+        [DisplayName("Time")]
+        [RegularExpression("([1-9][0-9]*)", ErrorMessage = "Invalide")]
+        [Range(0, int.MaxValue)]
         public int? MakeTime { get; set; }
 
+        [DisplayName("Preparation")]
         public string Description { get; set; }
 
+        [DisplayName("Picture")]
         public string Picture { get; set; }
 
         public virtual MealType MealType { get; set; }

@@ -32,15 +32,15 @@ namespace RecipeArchive.DAL.Models
 
                 context.SaveChanges();
 
-                Meal meal11 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = salad, Name = "meal11" };
-                Meal meal12 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = salad, Name = "meal12" };
-                Meal meal13 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = salad, Name = "meal13" };
-                Meal meal21 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = cake, Name = "meal21" };
-                Meal meal22 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = cake, Name = "meal22" };
-                Meal meal23 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = cake, Name = "meal23" };
-                Meal meal31 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = soup, Name = "meal31" };
-                Meal meal32 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = soup, Name = "meal32" };
-                Meal meal33 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = soup, Name = "meal33" };
+                Meal meal11 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = salad, Name = "meal11", Picture = "text_0.svg" };
+                Meal meal12 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = salad, Name = "meal12", Picture = "text_0.svg" };
+                Meal meal13 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = salad, Name = "meal13", Picture = "text_0.svg" };
+                Meal meal21 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = cake, Name = "meal21", Picture = "text_0.svg" };
+                Meal meal22 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = cake, Name = "meal22", Picture = "text_0.svg" };
+                Meal meal23 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = cake, Name = "meal23", Picture = "text_0.svg" };
+                Meal meal31 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = soup, Name = "meal31", Picture = "text_0.svg" };
+                Meal meal32 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = soup, Name = "meal32", Picture = "text_0.svg" };
+                Meal meal33 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = soup, Name = "meal33", Picture = "text_0.svg" };
 
                 context.Meal.AddRange(
                     meal11,meal12,meal13,

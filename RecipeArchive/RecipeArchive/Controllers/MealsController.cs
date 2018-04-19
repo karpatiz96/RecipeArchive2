@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,11 @@ using RecipeArchive.Data;
 using RecipeArchive.Extensions;
 using RecipeArchive.Models;
 using RecipeArchive.Models.DataViewModels;
+using static RecipeArchive.Models.Meal;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using System.Web;
+using Microsoft.AspNetCore.Identity;
 
 namespace RecipeArchive.Controllers
 {
@@ -16,9 +22,15 @@ namespace RecipeArchive.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public MealsController(ApplicationDbContext context)
+        private readonly IHostingEnvironment _hosting;
+
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public MealsController(ApplicationDbContext context, IHostingEnvironment hosting, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _hosting = hosting;
+            _userManager = userManager;
         }
 
         public IQueryable<MealDTO> GetMeals(string mealType)
@@ -29,7 +41,7 @@ namespace RecipeArchive.Controllers
                         {
                             MealID = m.MealID,
                             Name = m.Name,
-                            Stars = m.UserMeals.Sum(um =>(float) (um.Stars)) / m.UserMeals.Count,
+                            Stars = m.UserMeals.Sum(um =>(float) (um.Stars)) / m.UserMeals.Count(us => us.Stars != null),
                             MealTypeName = m.MealType.Name,
                             Picture = m.Picture
                         };
@@ -40,6 +52,17 @@ namespace RecipeArchive.Controllers
             }
 
             return meals;
+        }
+
+        public MealDTO GetMealDTO(Meal meal) {
+            MealDTO mealDTO = new MealDTO {
+                MealID = meal.MealID,
+                Name = meal.Name,
+                Stars = meal.UserMeals.Sum(um => (float)(um.Stars)) / meal.UserMeals.Count(us => us.Stars != null),
+                MealTypeName = meal.MealType.Name,
+                Picture = meal.Picture
+            };
+            return mealDTO;
         }
 
         // GET: Meals
@@ -77,9 +100,35 @@ namespace RecipeArchive.Controllers
             ViewData["CurrentFilter"] = type;
 
             IQueryable<MealDTO> meals = GetMeals(type);
-            int size = 2;
+            int size = 3;
             return View(await PaginatedList<MealDTO>.CreateAsync(meals, page ?? 1 , size));
         }
+
+        public async Task<IActionResult> RecipeBook()
+        {
+            RecipeBookViewModel recipeBookViewModel = new RecipeBookViewModel();
+
+            var mealTypes = from mt in _context.MealType
+                            select mt;
+
+            recipeBookViewModel.mealTypes = mealTypes;
+            recipeBookViewModel.meals = new List<IEnumerable<MealDTO>>();
+
+            foreach (MealType type in mealTypes) {
+                var userMeals = await _context.UserMeal.Include(us => us.Meal).ThenInclude(m => m.MealType).Where(us => us.RecipeBook == true).AsNoTracking().ToListAsync();
+                List<MealDTO> meals = new List<MealDTO>();
+                foreach (UserMeal userMeal in userMeals) {
+                    if (userMeal.Meal.MealTypeID == type.MealTypeID) {
+                        meals.Add(GetMealDTO(userMeal.Meal));
+                    }
+                }
+                recipeBookViewModel.meals.Add(meals);
+            }
+
+            return View(recipeBookViewModel);
+        }
+
+
 
         // GET: Meals/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -106,7 +155,7 @@ namespace RecipeArchive.Controllers
             mealView.MealTypeName = meal.MealType.Name;
             mealView.Name = meal.Name;
             mealView.Picture = meal.Picture;
-            mealView.Stars = meal.UserMeals.Sum(um => (float)(um.Stars)) / meal.UserMeals.Count;
+            mealView.Stars = meal.UserMeals.Sum(um => (float)(um.Stars)) / meal.UserMeals.Count(us => us.Stars != null);
 
             if (meal == null)
             {
@@ -119,7 +168,20 @@ namespace RecipeArchive.Controllers
         // GET: Meals/Create
         public IActionResult Create()
         {
-            ViewData["MealTypeID"] = new SelectList(_context.MealType, "MealTypeID", "MealTypeID");
+
+            var difficultyStates = new List<SelectListItem>();
+            difficultyStates.Add(new SelectListItem {
+                Text = "Select",
+                Value = ""
+            });
+
+            foreach (DifficultyStates item in Enum.GetValues(typeof(DifficultyStates))) {
+                difficultyStates.Add(new SelectListItem { Text = Enum.GetName(typeof(DifficultyStates), item), Value = item.ToString() });
+            }
+
+            ViewBag.diffState = difficultyStates;
+
+            ViewData["MealTypeID"] = new SelectList(_context.MealType, "MealTypeID", "Name");
             return View();
         }
 
@@ -128,15 +190,66 @@ namespace RecipeArchive.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MealID,MealTypeID,Difficulty,Name,MakeTime,Description,Picture")] Meal meal)
+        public async Task<IActionResult> Create([Bind("MealTypeID,Difficulty,Name,MakeTime,Description,Picture")] Meal meal, IFormFile Picture)
         {
+
             if (ModelState.IsValid)
             {
+
+                ApplicationUser user = await _userManager.GetUserAsync(HttpContext.User);
+
+                MealType mealType = _context.MealType.SingleOrDefault(mt => mt.MealTypeID == meal.MealTypeID);
+                meal.MealType = mealType;
                 _context.Add(meal);
+                await _context.SaveChangesAsync();
+
+                if (Picture != null && Picture.Length > 0) {
+
+                    var file = Picture;
+                    var upload = Path.Combine(_hosting.WebRootPath, "images\\imgMeal");
+                    var extension = Path.GetExtension(file.FileName);
+                    var fileName = Path.GetFileName(file.FileName);
+                    if (file.Length > 0) {
+                        string name = Path.GetFileNameWithoutExtension(fileName);
+                        string myfileName = name + '_' + meal.MealID + extension;
+
+                        using (var fileStream = new FileStream(Path.Combine(upload, myfileName), FileMode.Create)) {
+                            await file.CopyToAsync(fileStream);
+                            meal.Picture = myfileName;//Path.Combine(upload, myfileName);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+
+                }
+
+                UserMeal userMeal = new UserMeal();
+                userMeal.AlreadyMade = false;
+                userMeal.Favourite = false;
+                userMeal.RecipeBook = true;
+                userMeal.Stars = 0;
+                userMeal.MealID = meal.MealID;
+                if (user != null)
+                {
+                    userMeal.UserID = user.Id;
+                }
+                _context.Add(userMeal);
+                await _context.SaveChangesAsync();
+
+                if (user != null)
+                {
+                    userMeal.User = user;
+                    user.UserMeals.Add(userMeal);
+                }
+
+                meal.UserMeals.Add(userMeal);
+                userMeal.Meal = meal;
+
+                mealType.Meals.Add(meal);
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MealTypeID"] = new SelectList(_context.MealType, "MealTypeID", "MealTypeID", meal.MealTypeID);
+            ViewData["MealTypeID"] = new SelectList(_context.MealType, "MealTypeID", "Name", meal.MealTypeID);
             return View(meal);
         }
 

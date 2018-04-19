@@ -1,0 +1,27 @@
+﻿@model RecipeArchive.Models.Ingredient
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Ingredient</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-3">
+            <label>Name @Model.Name</label>
+        </div>
+        <div class="col-md-3">
+            <label>Quantity @Model.Quantity</label>
+        </div>
+    </div>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="IngredientID" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Details" asp-controller="Meals" asp-route-id="@Model.MealID">Back to Meal</a>
+    </form>
+</div>

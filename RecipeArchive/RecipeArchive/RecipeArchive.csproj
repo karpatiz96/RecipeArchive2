@@ -22,4 +22,8 @@
     <ProjectReference Include="..\RecipeArchive.DAL\RecipeArchive.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\imgMeal\" />
+  </ItemGroup>
+
 </Project>

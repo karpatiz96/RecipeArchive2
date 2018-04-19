@@ -1,0 +1,40 @@
+﻿@using RecipeArchive.Models;
+@model RecipeArchive.Models.DataViewModels.RecipeBookViewModel;
+
+@{
+    ViewData["Title"] = "RecipeBook";
+}
+<h2>RecipeBook</h2>
+
+@{
+    var x = 0;
+}
+<div class="container">
+    @foreach (var mealType in Model.mealTypes)
+    {
+        <div class="row">
+            <h3>@mealType.Name</h3>
+            @foreach (MealDTO item in Model.meals[x])
+            {
+                <div class="col-md-4">
+                    <div class="media">
+                        <div class="media-left">
+                            <a asp-controller="Meals" asp-action="Details" asp-route-id="@item.MealID">
+                                <img class="media-object" src="~/images/imgMeal/@item.Picture" width="100" height="100">
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <a asp-controller="Meals" asp-action="Details" asp-route-id="@item.MealID">@item.Name</a>
+                            <h4>@item.Stars</h4>
+                            <div>
+                                <a asp-controller="Meals" asp-action="Edit" asp-route-id="@item.MealID">Edit</a>
+                                <a asp-controller="Meals" asp-action="Delete" asp-route-id="@item.MealID">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        x++;
+    }
+</div>
