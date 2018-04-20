@@ -1,4 +1,5 @@
-﻿@model RecipeArchive.Models.Meal
+﻿@using static RecipeArchive.Models.Meal
+@model RecipeArchive.Models.Meal
 
 @{
     ViewData["Title"] = "Edit";
@@ -8,46 +9,58 @@
 
 <h4>Meal</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="MealID" />
-            <div class="form-group">
-                <label asp-for="MealTypeID" class="control-label"></label>
-                <select asp-for="MealTypeID" class="form-control" asp-items="ViewBag.MealTypeID"></select>
-                <span asp-validation-for="MealTypeID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Difficulty" class="control-label"></label>
-                <select asp-for="Difficulty" class="form-control"></select>
-                <span asp-validation-for="Difficulty" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+<div class="form-horizontal">
+    <form asp-action="Edit" asp-controller="Meals" enctype="multipart/form-data" asp-antiforgery="true" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="MealID" />
+        <div class="form-group">
+            <label asp-for="Name" class="control-label col-md-2"></label>
+            <div class="col-md-10">
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="MakeTime" class="control-label"></label>
+        </div>
+        <div class="form-group">
+            <label asp-for="MealTypeID" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <select asp-for="MealTypeID" class="form-control" asp-items="ViewBag.MealTypeID"></select>
+                <span asp-validation-for="MealTypeID" class="text-danger"></span>
+            </div>
+            </div>
+        <div class="form-group">
+            <label asp-for="Difficulty" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <select asp-for="Difficulty" asp-items="Html.GetEnumSelectList<DifficultyStates>()" class="form-control"></select>
+                <span asp-validation-for="Difficulty" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="MakeTime" class="control-label col-md-2"></label>
+            <div class="col-md-10">
                 <input asp-for="MakeTime" class="form-control" />
                 <span asp-validation-for="MakeTime" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Description" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <textarea asp-for="Description" rows="5" cols="40" class="form-control"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Picture" class="control-label"></label>
-                <input asp-for="Picture" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Picture" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <input asp-for="Picture" type="file" class="form-control" />
                 <span asp-validation-for="Picture" class="text-danger"></span>
             </div>
-            <div class="form-group">
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
 
 <div>
