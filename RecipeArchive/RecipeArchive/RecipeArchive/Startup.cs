@@ -61,7 +61,7 @@ namespace RecipeArchive
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Meals}/{action=Index}/{id?}");
             });
         }
     }
