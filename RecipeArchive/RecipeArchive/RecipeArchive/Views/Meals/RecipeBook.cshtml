@@ -24,11 +24,11 @@
                             </a>
                         </div>
                         <div class="media-body">
-                            <a asp-controller="Meals" asp-action="Details" asp-route-id="@item.MealID">@item.Name</a>
-                            <h4>@item.Stars</h4>
+                            <p><b>Name: </b><a asp-controller="Meals" asp-action="Details" asp-route-id="@item.MealID">@item.Name</a></p>
+                            <p><b>Rating: </b>@item.Stars</p>
                             <div>
-                                <a asp-controller="Meals" asp-action="Edit" asp-route-id="@item.MealID">Edit</a>
-                                <a asp-controller="Meals" asp-action="Delete" asp-route-id="@item.MealID">Delete</a>
+                                <a asp-controller="Meals" asp-action="Edit" asp-route-id="@item.MealID" class="btn btn-default">Edit</a>
+                                <a asp-controller="Meals" asp-action="Delete" asp-route-id="@item.MealID" class="btn btn-default">Delete</a>
                             </div>
                         </div>
                     </div>

@@ -74,7 +74,7 @@ namespace RecipeArchive.Controllers
                     meal.Ingredients.Add(ingredient);
                     await _context.SaveChangesAsync();
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details),"Meals",new { id = ingredient.MealID });
             }
             ViewData["MealID"] = new SelectList(_context.Meal, "MealID", "MealID", ingredient.MealID);
             return View(ingredient);
@@ -94,7 +94,7 @@ namespace RecipeArchive.Controllers
                 return NotFound();
             }
             ViewData["MealID"] = new SelectList(_context.Meal, "MealID", "MealID", ingredient.MealID);
-            return View(ingredient);
+            return RedirectToAction(nameof(Details), "Meals", new { id = ingredient.MealID, ingredientID = ingredient.IngredientID });
         }
 
         // POST: Ingredients/Edit/5
@@ -102,13 +102,8 @@ namespace RecipeArchive.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IngredientID,MealID,Name,Quantity")] Ingredient ingredient)
+        public async Task<IActionResult> Edit([Bind("IngredientID,MealID,Name,Quantity")] Ingredient ingredient)
         {
-            if (id != ingredient.IngredientID)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
@@ -127,7 +122,7 @@ namespace RecipeArchive.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), "Meals", new { id = ingredient.MealID, ingredientID = -1 });
             }
             ViewData["MealID"] = new SelectList(_context.Meal, "MealID", "MealID", ingredient.MealID);
             return View(ingredient);
@@ -163,7 +158,7 @@ namespace RecipeArchive.Controllers
             meal.Ingredients.Remove(ingredient);
             _context.Ingredient.Remove(ingredient);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), "Meals", new { id = ingredient.MealID, ingredientID = -1 });
         }
 
         private bool IngredientExists(int id)

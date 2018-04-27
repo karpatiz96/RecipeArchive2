@@ -1,0 +1,117 @@
+﻿@model RecipeArchive.Models.DataViewModels.MealViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>View Meal</h2>
+<hr />
+<div class="media">
+    <div class="media-left">
+        <a asp-controller="Meals" asp-action="Details" asp-route-id="@Model.MealID">
+            <img class="media-object" src="~/images/imgMeal/@Model.Picture" width="100" height="100">
+        </a>
+    </div>
+    <div class="media-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2">
+                    <label>Name @Model.Name</label>
+                </div>
+                <div class="col-md-2">
+                    <label>Time @Model.MakeTime</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <label>Type @Model.MealTypeName</label>
+                </div>
+                <div class="col-md-2">
+                    <label>Difficulty </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <label>Stars @Model.Stars</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>Preparation</h3>
+<p>@Model.Description</p>
+
+<h3>Ingredients</h3>
+<form asp-action="Edit" asp-controller="Ingredients" method="post">
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var ingredient in Model.Ingredients)
+{
+        if (ingredient.IngredientID != ViewBag.ingredientID)
+        {
+            <tr>
+                <td>
+                    @ingredient.Name
+                </td>
+                <td>
+                    @ingredient.Quantity
+                </td>
+                @if (ViewBag.owner)
+                {
+                <td>
+                    <a asp-action="Edit" asp-controller="Ingredients" asp-route-id="@ingredient.IngredientID" class="btn btn-default">Edit</a>
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-controller="Ingredients" asp-route-id="@ingredient.IngredientID" class="btn btn-default">Delete</a>
+                </td>
+                }
+            </tr>
+        }
+        if (ingredient.IngredientID == ViewBag.ingredientID)
+        {
+            <tr>
+                <td>
+                    <input name="Name" class="form-control" />
+                </td>
+                <td>
+                    <input name="Quantity" class="form-control" />
+                    <input type="hidden" name="IngredientID" value="@ingredient.IngredientID" />
+                    <input type="hidden" name="MealID" class="form-control" value="@Model.MealID" />
+                </td>
+                <td>
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </td>
+            </tr>
+    }
+}
+    </tbody>
+</table>
+</form>
+<hr />
+@if(ViewBag.owner)
+{
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" asp-controller="Ingredients" asp-antiforgery="true" method="post">
+            <input type="hidden" name="MealID" class="form-control" value="@Model.MealID" />
+            <input type="hidden" name="Name" class="form-control" value="Name" />
+            <input type="hidden" name="Quantity" class="form-control" value="db" />
+            <input type="submit" value="Add" class="btn btn-default" />
+        </form>
+    </div>
+</div>
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <a asp-action="AddAlreadyMade" asp-controller="Meals" asp-route-id="@Model.MealID" class="btn btn-default">Add to Already made</a>
+        <a asp-action="AddFavourite" asp-controller="Meals" asp-route-id="@Model.MealID" class="btn btn-default">Add to Favourite</a>
+    </div>
+</div>

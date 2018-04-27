@@ -11,16 +11,6 @@
     <a asp-action="Create">Create New</a>
 </p>
 
-<form asp-action="Index" method="get">
-    <div class="form-actions no-color">
-        <p>
-            Find by name: <input type="text" name="MealType" value="@ViewData["currentFilter"]" />
-            <input type="submit" value="Search" class="btn btn-default" /> |
-            <a asp-action="Index">Back to Full List</a>
-        </p>
-    </div>
-</form>
-
 @{ 
     var x = 0;
 }
@@ -32,13 +22,13 @@
         <div class="col-md-4">
             <div class="media">
                 <div class="media-left">
-                    <a href="#">
+                    <a asp-controller="Meals" asp-action="Details" asp-route-id="@item.MealID">
                         <img class="media-object" src="~/images/imgMeal/@item.Picture" width="100" height="100">
                     </a>
                 </div>
                 <div class="media-body">
-                    <a asp-controller="Meals" asp-action="Details" asp-route-id="@item.MealID">@item.Name</a>
-                    <h4>@item.Stars</h4>
+                    <p><b>Name: </b><a asp-controller="Meals" asp-action="Details" asp-route-id="@item.MealID">@item.Name</a></p>
+                    <p><b>Rating: </b>@item.Stars</p>
                 </div>
             </div>
             </div>

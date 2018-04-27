@@ -1,0 +1,39 @@
+﻿@using RecipeArchive.Models;
+@model RecipeArchive.Models.DataViewModels.RecipeBookViewModel;
+
+@{
+    ViewData["Title"] = "Favourite";
+}
+<h2>Favourite</h2>
+
+@{
+    var x = 0;
+}
+<div class="container">
+    @foreach (var mealType in Model.mealTypes)
+    {
+        <div class="row">
+            <h3>@mealType.Name</h3>
+            @foreach (MealDTO item in Model.meals[x])
+            {
+                <div class="col-md-4">
+                    <div class="media">
+                        <div class="media-left">
+                            <a asp-controller="Meals" asp-action="Details" asp-route-id="@item.MealID">
+                                <img class="media-object" src="~/images/imgMeal/@item.Picture" width="100" height="100">
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <p><b>Name: </b><a asp-controller="Meals" asp-action="Details" asp-route-id="@item.MealID">@item.Name</a></p>
+                            <p><b>Rating: </b>@item.Stars</p>
+                            <div>
+                                <a asp-controller="Meals" asp-action="DropFavourite" asp-route-id="@item.MealID" class="btn btn-default">Drop</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        x++;
+    }
+</div>

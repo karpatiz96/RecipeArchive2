@@ -1,0 +1,49 @@
+﻿@using RecipeArchive.Models.DataViewModels;
+@using RecipeArchive.Extensions
+@model PaginatedList<RecipeArchive.Models.MealDTO>
+
+@{
+    ViewData["Title"] = "Search";
+}
+<h2>SearchName</h2>
+</hr>
+<div class="container">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4">
+                <div class="media">
+                    <div class="media-left">
+                        <a asp-controller="Meals" asp-action="Details" asp-route-id="@item.MealID">
+                            <img class="media-object" src="~/images/imgMeal/@item.Picture" width="100" height="100">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <p><b>Name: </b><a asp-controller="Meals" asp-action="Details" asp-route-id="@item.MealID">@item.Name</a></p>
+                        <p><b>Rating: </b>@item.Stars</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@{
+    var prevDisabled = !Model.HasPrevious ? "disabled" : "";
+    var nextDisabled = !Model.HasNext ? "disabled" : "";
+}
+
+<a asp-action="SearchName"
+   asp-controller="Meals"
+   asp-route-page="@(Model.Index - 1)"
+   asp-route-currentName="@ViewBag.Name"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="SearchName"
+   asp-controller="Meals"
+   asp-route-page="@(Model.Index + 1)"
+   asp-route-currentName="@ViewBag.Name"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>

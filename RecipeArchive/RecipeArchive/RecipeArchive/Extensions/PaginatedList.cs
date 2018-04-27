@@ -30,5 +30,12 @@ namespace RecipeArchive.Extensions
             return new PaginatedList<T>(items, count, index, size);
         }
 
+        public static async Task<PaginatedList<T>> CreateAsync(IAsyncEnumerable<T> source, int index, int size)
+        {
+            var count = await source.Count();
+            var items = await source.Skip((index - 1) * size).Take(size).ToList();
+            return new PaginatedList<T>(items, count, index, size);
+        }
+
     }
 }

@@ -1,0 +1,68 @@
+﻿@using static RecipeArchive.Models.Meal
+@model RecipeArchive.Models.Meal
+
+@{
+    ViewData["Title"] = "Edit";
+}
+<h2>Edit Meal</h2>
+<hr />
+<div class="form-horizontal">
+    <form asp-action="Edit" asp-controller="Meals" enctype="multipart/form-data" asp-antiforgery="true" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="MealID" />
+        <input type="hidden" asp-for="Picture" />
+        <div class="form-group">
+            <label asp-for="Name" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <input asp-for="Name" class="form-control" placeholder="Name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="MealTypeID" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <select asp-for="MealTypeID" class="form-control" asp-items="ViewBag.MealTypeID"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Difficulty" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <select asp-for="Difficulty" asp-items="Html.GetEnumSelectList<DifficultyStates>()" class="form-control"></select>
+                <span asp-validation-for="Difficulty" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="MakeTime" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <input asp-for="MakeTime" class="form-control" placeholder="Time in minutes" />
+                <span asp-validation-for="MakeTime" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <textarea asp-for="Description" rows="5" cols="40" class="form-control" placeholder="Type here the meal description"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Picture" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <input asp-for="Picture" type="file" class="form-control" />
+                <span asp-validation-for="Picture" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </form>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
