@@ -494,7 +494,7 @@ namespace RecipeArchive.Controllers
             {
                 return NotFound();
             }
-            ViewData["MealTypeID"] = new SelectList(_context.MealType, "MealTypeID", "MealTypeID", meal.MealTypeID);
+            ViewData["MealTypeID"] = new SelectList(_context.MealType, "MealTypeID", "Name", meal.MealTypeID);
             return View(meal);
         }
 
