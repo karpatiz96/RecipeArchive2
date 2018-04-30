@@ -6,6 +6,14 @@
 
 <h2>View Meal</h2>
 <hr />
+@if (ViewBag.Stars == true)
+{
+<form asp-controller="Meals" asp-action="Rate" method="post">
+    <input type="hidden" name="mealID" class="form-control" value="@Model.MealID" />
+    <select name="Rating" class="form-control" asp-items="ViewBag.Ratings"></select>
+    <input type="submit" value="Rate" class="btn btn-default" />
+</form>
+}
 <div class="media">
     <div class="media-left">
         <a asp-controller="Meals" asp-action="Details" asp-route-id="@Model.MealID">
@@ -44,69 +52,69 @@
 
 <h3>Ingredients</h3>
 <form asp-action="Edit" asp-controller="Ingredients" method="post">
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Quantity</th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var ingredient in Model.Ingredients)
-{
-        if (ingredient.IngredientID != ViewBag.ingredientID)
-        {
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @ingredient.Name
-                </td>
-                <td>
-                    @ingredient.Quantity
-                </td>
-                @if (ViewBag.owner)
+                <th scope="col">Name</th>
+                <th scope="col">Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ingredient in Model.Ingredients)
+            {
+                if (ingredient.IngredientID != ViewBag.ingredientID)
                 {
-                <td>
-                    <a asp-action="Edit" asp-controller="Ingredients" asp-route-id="@ingredient.IngredientID" class="btn btn-default">Edit</a>
-                </td>
-                <td>
-                    <a asp-action="Delete" asp-controller="Ingredients" asp-route-id="@ingredient.IngredientID" class="btn btn-default">Delete</a>
-                </td>
+                    <tr>
+                        <td>
+                            @ingredient.Name
+                        </td>
+                        <td>
+                            @ingredient.Quantity
+                        </td>
+                        @if (ViewBag.owner)
+                        {
+                            <td>
+                                <a asp-action="Edit" asp-controller="Ingredients" asp-route-id="@ingredient.IngredientID" class="btn btn-default">Edit</a>
+                            </td>
+                            <td>
+                                <a asp-action="Delete" asp-controller="Ingredients" asp-route-id="@ingredient.IngredientID" class="btn btn-default">Delete</a>
+                            </td>
+                        }
+                    </tr>
                 }
-            </tr>
-        }
-        if (ingredient.IngredientID == ViewBag.ingredientID)
-        {
-            <tr>
-                <td>
-                    <input name="Name" class="form-control" />
-                </td>
-                <td>
-                    <input name="Quantity" class="form-control" />
-                    <input type="hidden" name="IngredientID" value="@ingredient.IngredientID" />
-                    <input type="hidden" name="MealID" class="form-control" value="@Model.MealID" />
-                </td>
-                <td>
-                    <input type="submit" value="Save" class="btn btn-default" />
-                </td>
-            </tr>
-    }
-}
-    </tbody>
-</table>
+                if (ingredient.IngredientID == ViewBag.ingredientID)
+                {
+                    <tr>
+                        <td>
+                            <input name="Name" class="form-control" />
+                        </td>
+                        <td>
+                            <input name="Quantity" class="form-control" />
+                            <input type="hidden" name="IngredientID" value="@ingredient.IngredientID" />
+                            <input type="hidden" name="MealID" class="form-control" value="@Model.MealID" />
+                        </td>
+                        <td>
+                            <input type="submit" value="Save" class="btn btn-default" />
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
 </form>
 <hr />
-@if(ViewBag.owner)
+@if (ViewBag.owner)
 {
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" asp-controller="Ingredients" asp-antiforgery="true" method="post">
-            <input type="hidden" name="MealID" class="form-control" value="@Model.MealID" />
-            <input type="hidden" name="Name" class="form-control" value="Name" />
-            <input type="hidden" name="Quantity" class="form-control" value="db" />
-            <input type="submit" value="Add" class="btn btn-default" />
-        </form>
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create" asp-controller="Ingredients" asp-antiforgery="true" method="post">
+                <input type="hidden" name="MealID" class="form-control" value="@Model.MealID" />
+                <input type="hidden" name="Name" class="form-control" value="Name" />
+                <input type="hidden" name="Quantity" class="form-control" value="db" />
+                <input type="submit" value="Add" class="btn btn-default" />
+            </form>
+        </div>
     </div>
-</div>
 }
 
 <div class="row">

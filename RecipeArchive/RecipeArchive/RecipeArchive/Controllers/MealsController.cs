@@ -331,7 +331,54 @@ namespace RecipeArchive.Controllers
             return View(recipeBookViewModel);
         }
 
+        public async Task<IActionResult> Rate(int? mealID, int Rating) {
+            if (mealID == null) {
+                return NotFound();
+            }
 
+            ApplicationUser user = await _userManager.GetUserAsync(HttpContext.User);
+
+            UserMeal userMeal = await _context.UserMeal.Where(us => us.UserID == user.Id && us.MealID == mealID).SingleOrDefaultAsync();
+
+            Meal meal = await _context.Meal.Where(m => m.MealID == mealID).SingleOrDefaultAsync();
+
+            if (userMeal != null)
+            {
+                userMeal.Stars = Rating;
+                _context.Update(userMeal);
+                await _context.SaveChangesAsync();
+            } else {
+                try
+                {
+                    userMeal = new UserMeal();
+                    userMeal.AlreadyMade = false;
+                    userMeal.Favourite = false;
+                    userMeal.RecipeBook = false;
+                    userMeal.Stars = Rating;
+                    userMeal.MealID = meal.MealID;
+                    userMeal.Meal = meal;
+                    if (user != null)
+                    {
+                        userMeal.UserID = user.Id;
+                        userMeal.User = user;
+                    }
+
+                    _context.Add(userMeal);
+                    await _context.SaveChangesAsync();
+
+                    user.UserMeals.Add(userMeal);
+                    meal.UserMeals.Add(userMeal);
+
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            return RedirectToAction(nameof(Details), "Meals", new { id = mealID });
+        }
 
         // GET: Meals/Details/5
         public async Task<IActionResult> Details(int? id, int? ingredientID)
@@ -357,6 +404,12 @@ namespace RecipeArchive.Controllers
 
             var Ingredients = await _context.Ingredient.Where(i => i.MealID == id).ToListAsync();
 
+            int count = meal.UserMeals.Count(us => us.Stars != null && us.Stars != 0);
+            if (count <= 0)
+            {
+                count = 1;
+            }
+
             MealViewModel mealView = new MealViewModel();
 
             mealView.Ingredients = Ingredients;
@@ -367,16 +420,36 @@ namespace RecipeArchive.Controllers
             mealView.MealTypeName = meal.MealType.Name;
             mealView.Name = meal.Name;
             mealView.Picture = meal.Picture;
-            mealView.Stars = meal.UserMeals.Sum(um => (float)(um.Stars)) / meal.UserMeals.Count(us => us.Stars != null);
+            mealView.Stars = meal.UserMeals.Sum(um => (float)(um.Stars)) / count;
 
             if (meal == null)
             {
                 return NotFound();
             }
 
+            var ratingStars = new List<SelectListItem>();
+
+            for (int i = 1; i <= 5; i++) {
+                ratingStars.Add(new SelectListItem { Text = i.ToString(), Value = i.ToString() });
+            }
+
             if (user != null)
             {
                 UserMeal userMeal = await _context.UserMeal.Where(us => us.MealID == meal.MealID && us.RecipeBook == true).SingleOrDefaultAsync();
+
+                UserMeal userMeal2 = await _context.UserMeal.Where(us => us.MealID == meal.MealID  && us.UserID == user.Id).SingleOrDefaultAsync();
+
+                if (userMeal2 != null && (userMeal2.Stars != null || userMeal2.Stars == 0)) {
+                    if (userMeal2.Stars != null && userMeal2.Stars <= 0) {
+                        ViewBag.Stars = true;
+                        ViewBag.Ratings = ratingStars;
+                    } else {
+                        ViewBag.Stars = false;
+                    }
+                } else {
+                    ViewBag.Stars = true;
+                    ViewBag.Ratings = ratingStars;
+                }
 
                 if (userMeal != null && userMeal.UserID == user.Id)
                 {
