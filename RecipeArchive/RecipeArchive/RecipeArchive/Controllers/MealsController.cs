@@ -130,67 +130,85 @@ namespace RecipeArchive.Controllers
 
         public async Task<IActionResult> Search([Bind("Name,MealType,MakeTime,Difficulty")] FilterViewModel filter, int? page, 
             string currentName, int currentTime, string currentType, int currentDifficulty) {
-            var meals = from m in _context.Meal
-                        select m;
 
-            meals = meals.Include(m => m.MealType).Include(m => m.UserMeals);
-
-            if (page == null)
+            if (ModelState.IsValid)
             {
-                page = 1;
-            } else {
-                filter.Name = currentName;
-                if (currentTime >= 0)
+                var meals = from m in _context.Meal
+                            select m;
+
+                meals = meals.Include(m => m.MealType).Include(m => m.UserMeals);
+
+                if (page == null)
                 {
-                    filter.MakeTime = currentTime;
+                    page = 1;
                 }
-                filter.MealType = currentType;
-                if (currentDifficulty >= 0)
+                else
                 {
-                    filter.Difficulty = currentDifficulty;
+                    filter.Name = currentName;
+                    if (currentTime >= 0)
+                    {
+                        filter.MakeTime = currentTime;
+                    }
+                    filter.MealType = currentType;
+                    if (currentDifficulty >= 0)
+                    {
+                        filter.Difficulty = currentDifficulty;
+                    }
                 }
+
+                if (!String.IsNullOrEmpty(filter.Name))
+                {
+                    meals = meals.Where(m => m.Name.Contains(filter.Name));
+                    ViewBag.Name = filter.Name;
+                }
+                else
+                {
+                    ViewBag.Name = "";
+                }
+                if (!String.IsNullOrEmpty(filter.MealType))
+                {
+                    meals = meals.Where(m => m.MealType.Name == filter.MealType);
+                    ViewBag.Type = filter.MealType;
+                }
+                else
+                {
+                    ViewBag.Type = "";
+                }
+                if (filter.Difficulty >= 0)
+                {
+                    meals = meals.Where(m => (int)m.Difficulty == filter.Difficulty);
+                    ViewBag.Difficulty = filter.Difficulty;
+                }
+                else
+                {
+                    ViewBag.Difficulty = -1;
+                }
+                if (filter.MakeTime != null)
+                {
+                    meals = meals.Where(m => m.MakeTime == filter.MakeTime);
+                    ViewBag.Time = filter.MakeTime;
+                }
+                else
+                {
+                    ViewBag.Time = -1;
+                }
+
+                int size = 9;
+
+                List<MealDTO> mealItems = new List<MealDTO>();
+
+                foreach (Meal meal in meals)
+                {
+                    mealItems.Add(GetMealDTO(meal));
+                }
+
+                IAsyncEnumerable<MealDTO> mealDTOs = mealItems.ToAsyncEnumerable();
+
+                return View(await PaginatedList<MealDTO>.CreateAsync(mealDTOs, page ?? 1, size));
+
             }
 
-            if (!String.IsNullOrEmpty(filter.Name))
-            {
-                meals = meals.Where(m => m.Name.Contains(filter.Name));
-                ViewBag.Name = filter.Name;
-            } else {
-                ViewBag.Name = "";
-            }
-            if (!String.IsNullOrEmpty(filter.MealType))
-            {
-                meals = meals.Where(m => m.MealType.Name == filter.MealType);
-                ViewBag.Type = filter.MealType;
-            } else {
-                ViewBag.Type = "";
-            }
-            if (filter.Difficulty >= 0)
-            {
-                meals = meals.Where(m => (int)m.Difficulty == filter.Difficulty);
-                ViewBag.Difficulty = filter.Difficulty;
-            } else {
-                ViewBag.Difficulty = -1;
-            }
-            if (filter.MakeTime != null)
-            {
-                meals = meals.Where(m => m.MakeTime == filter.MakeTime);
-                ViewBag.Time = filter.MakeTime;
-            } else {
-                ViewBag.Time = -1;
-            }
-
-            int size = 9;
-
-            List<MealDTO> mealItems = new List<MealDTO>();
-
-            foreach (Meal meal in meals) {
-                mealItems.Add(GetMealDTO(meal));
-            }
-
-            IAsyncEnumerable<MealDTO> mealDTOs = mealItems.ToAsyncEnumerable();
-
-            return View(await PaginatedList<MealDTO>.CreateAsync(mealDTOs, page ?? 1, size));
+            return RedirectToAction(nameof(Filter), "Meals");
         }
 
         public async Task<IActionResult> SearchName(string searchName, int? page, string currentName) {

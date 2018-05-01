@@ -6,57 +6,82 @@
 
 <h2>View Meal</h2>
 <hr />
-@if (ViewBag.Stars == true)
-{
-<form asp-controller="Meals" asp-action="Rate" method="post">
-    <input type="hidden" name="mealID" class="form-control" value="@Model.MealID" />
-    <select name="Rating" class="form-control" asp-items="ViewBag.Ratings"></select>
-    <input type="submit" value="Rate" class="btn btn-default" />
-</form>
-}
 <div class="media">
     <div class="media-left">
         <a asp-controller="Meals" asp-action="Details" asp-route-id="@Model.MealID">
-            <img class="media-object" src="~/images/imgMeal/@Model.Picture" width="100" height="100">
+            <img class="media-object" src="~/images/imgMeal/@Model.Picture" width="200" height="200">
         </a>
     </div>
     <div class="media-body">
         <div class="container">
             <div class="row">
-                <div class="col-md-2">
-                    <label>Name @Model.Name</label>
-                </div>
-                <div class="col-md-2">
-                    <label>Time @Model.MakeTime</label>
+                <label class="col-md-1"><b>Name:</b> </label>
+                <div class="col-md-11">
+                    <p>@Model.Name</p>
                 </div>
             </div>
             <div class="row">
+                <label class="col-md-1"><b>Type:</b> </label>
                 <div class="col-md-2">
-                    <label>Type @Model.MealTypeName</label>
-                </div>
-                <div class="col-md-2">
-                    <label>Difficulty @Model.Difficulty</label>
+                    <p>@Model.MealTypeName</p>
                 </div>
             </div>
             <div class="row">
+                <label class="col-md-1"><b>Difficulty:</b> </label>
                 <div class="col-md-2">
-                    <label>Rating @Model.Stars</label>
+                    <p>@Model.Difficulty</p>
                 </div>
+            </div>
+            <div class="row">
+                <label class="col-md-1"><b>Time:</b> </label>
+                <div class="col-md-2">
+                    <p>@Model.MakeTime</p>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-md-1"><b>Ratings:</b> </label>
+                <div class="col-md-2">
+                    <p>@Model.Stars</p>
+                </div>
+            </div>
+            <div class="row">
+@if (ViewBag.Stars == true)
+{
+                <form asp-controller="Meals" asp-action="Rate" class="form-inline" method="post">
+                    <div class="col-md-6">
+                    <input type="hidden" name="mealID" class="form-control" value="@Model.MealID" />
+                    <label for="Rate">Rate: </label>
+                    <div class="form-group col-md-offset-1">
+                        <select name="Rating" id="Rate" class="form-control" asp-items="ViewBag.Ratings"></select>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Rate" class="btn btn-default" />
+                    </div>
+                    </div>
+                </form>
+}
             </div>
         </div>
     </div>
 </div>
 
 <h3>Preparation</h3>
-<p>@Model.Description</p>
-
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <p>@Model.Description</p>
+    </div>
+</div>
+<hr />
 <h3>Ingredients</h3>
 <form asp-action="Edit" asp-controller="Ingredients" method="post">
+    <div class="row">
+    <div class="col-md-6">
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Quantity</th>
+                <th style="width: 50%">Name</th>
+                <th style="width: 20%">Quantity</th>
             </tr>
         </thead>
         <tbody>
@@ -65,18 +90,18 @@
                 if (ingredient.IngredientID != ViewBag.ingredientID)
                 {
                     <tr>
-                        <td>
-                            @ingredient.Name
+                        <td style="width: 50%">
+                            <a asp-action="Edit" asp-controller="Ingredients" asp-route-id="@ingredient.IngredientID" >@ingredient.Name</a>
                         </td>
-                        <td>
+                        <td style="width: 20%">
                             @ingredient.Quantity
                         </td>
                         @if (ViewBag.owner)
                         {
-                            <td>
+                            <td style="width: 15%">
                                 <a asp-action="Edit" asp-controller="Ingredients" asp-route-id="@ingredient.IngredientID" class="btn btn-default">Edit</a>
                             </td>
-                            <td>
+                            <td style="width: 15%">
                                 <a asp-action="Delete" asp-controller="Ingredients" asp-route-id="@ingredient.IngredientID" class="btn btn-default">Delete</a>
                             </td>
                         }
@@ -85,15 +110,15 @@
                 if (ingredient.IngredientID == ViewBag.ingredientID)
                 {
                     <tr>
-                        <td>
-                            <input name="Name" class="form-control" />
+                        <td style="width: 50%">
+                            <input name="Name" class="form-control" value="@ingredient.Name" />
                         </td>
-                        <td>
-                            <input name="Quantity" class="form-control" />
+                        <td style="width: 20%">
+                            <input name="Quantity" class="form-control" value="@ingredient.Quantity" />
                             <input type="hidden" name="IngredientID" value="@ingredient.IngredientID" />
                             <input type="hidden" name="MealID" class="form-control" value="@Model.MealID" />
                         </td>
-                        <td>
+                        <td style="width: 30%">
                             <input type="submit" value="Save" class="btn btn-default" />
                         </td>
                     </tr>
@@ -101,22 +126,23 @@
             }
         </tbody>
     </table>
+    </div>
+    </div>
 </form>
-<hr />
 @if (ViewBag.owner)
 {
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
             <form asp-action="Create" asp-controller="Ingredients" asp-antiforgery="true" method="post">
                 <input type="hidden" name="MealID" class="form-control" value="@Model.MealID" />
                 <input type="hidden" name="Name" class="form-control" value="Name" />
                 <input type="hidden" name="Quantity" class="form-control" value="db" />
                 <input type="submit" value="Add" class="btn btn-default" />
             </form>
-        </div>
+            </div>
     </div>
 }
-
+<hr />
 <div class="row">
     <div class="col-md-4">
         <a asp-action="AddAlreadyMade" asp-controller="Meals" asp-route-id="@Model.MealID" class="btn btn-default">Add to Already made</a>

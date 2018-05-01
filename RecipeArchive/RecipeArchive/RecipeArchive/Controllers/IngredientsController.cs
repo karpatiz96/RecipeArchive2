@@ -144,16 +144,27 @@ namespace RecipeArchive.Controllers
                 return NotFound();
             }
 
-            return View(ingredient);
+            Meal meal = await _context.Meal.SingleOrDefaultAsync(m => m.MealID == ingredient.MealID);
+            meal.Ingredients.Remove(ingredient);
+            _context.Ingredient.Remove(ingredient);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), "Meals", new { id = ingredient.MealID, ingredientID = -1 });
         }
 
         // POST: Ingredients/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
 
             var ingredient = await _context.Ingredient.SingleOrDefaultAsync(m => m.IngredientID == id);
+
+            if (ingredient == null)
+            {
+                return NotFound();
+            }
+
             Meal meal = await _context.Meal.SingleOrDefaultAsync(m => m.MealID == ingredient.MealID );
             meal.Ingredients.Remove(ingredient);
             _context.Ingredient.Remove(ingredient);
