@@ -1,3 +1,3 @@
-﻿$('.navbar-fixed-lower').affix({
+﻿/*$('.navbar-fixed-lower').affix({
     offset: { top: 50 }
-});
+});*/
