@@ -5,7 +5,7 @@
     ViewData["Title"] = "RecipeBook";
 }
 <h2>RecipeBook</h2>
-
+<hr />
 <p>
     <a asp-action="Create" class="btn btn-default">New Meal</a>
 </p>
@@ -20,7 +20,7 @@
             <h3>@mealType.Name</h3>
             @foreach (MealDTO item in Model.meals[x])
             {
-                <div class="col-md-4">
+                <div class="col-md-4 meal-item">
                     <div class="media">
                         <div class="media-left">
                             <a asp-controller="Meals" asp-action="Details" asp-route-id="@item.MealID">

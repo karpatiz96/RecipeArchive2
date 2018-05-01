@@ -6,12 +6,12 @@
     ViewData["Title"] = "Search";
 }
 <h2>Search</h2>
-</hr>
+<hr />
 <div class="container">
     <div class="row">
         @foreach (var item in Model)
         {
-            <div class="col-md-4">
+            <div class="col-md-4 meal-item">
                 <div class="media">
                     <div class="media-left">
                         <a asp-controller="Meals" asp-action="Details" asp-route-id="@item.MealID">

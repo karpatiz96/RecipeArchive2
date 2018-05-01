@@ -6,7 +6,7 @@
 }
 
 <h2>Home</h2>
-
+<hr />
 @{ 
     var x = 0;
 }
@@ -15,7 +15,7 @@
     <div class="row">
         <h3>@mealType.Name</h3>
 @foreach (MealDTO item in Model.meals[x]) {
-        <div class="col-md-4">
+        <div class="col-md-4 meal-item">
             <div class="media">
                 <div class="media-left">
                     <a asp-controller="Meals" asp-action="Details" asp-route-id="@item.MealID">
