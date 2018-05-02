@@ -84,9 +84,14 @@ namespace RecipeArchive.Controllers
             recipeBookViewModel.mealTypes = mealTypes;
             recipeBookViewModel.meals = new List<IEnumerable<MealDTO>>();
 
+            int size = 9;
+
             foreach (var type in mealTypes)
             {
-                recipeBookViewModel.meals.Add(GetMeals(type.Name));
+                IQueryable<MealDTO> mealDTOs = GetMeals(type.Name);
+                mealDTOs = mealDTOs.OrderByDescending(m => m.Stars);
+                mealDTOs = mealDTOs.Take(size).AsQueryable();
+                recipeBookViewModel.meals.Add(mealDTOs);
             }
 
             return View(recipeBookViewModel);
