@@ -142,10 +142,18 @@
             </div>
     </div>
 }
+@if (ViewBag.In) { 
 <hr />
+}
 <div class="row">
     <div class="col-md-4">
+        @if (ViewBag.AlreadyMade)
+        {
         <a asp-action="AddAlreadyMade" asp-controller="Meals" asp-route-id="@Model.MealID" class="btn btn-default">Add to Already made</a>
+        }
+        @if (ViewBag.Favourite)
+        {
         <a asp-action="AddFavourite" asp-controller="Meals" asp-route-id="@Model.MealID" class="btn btn-default">Add to Favourite</a>
+        }
     </div>
 </div>

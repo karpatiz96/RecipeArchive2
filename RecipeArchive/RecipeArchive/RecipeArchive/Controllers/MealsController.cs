@@ -451,6 +451,7 @@ namespace RecipeArchive.Controllers
 
             if (user != null)
             {
+                ViewBag.In = true;
                 UserMeal userMeal = await _context.UserMeal.Where(us => us.MealID == meal.MealID && us.RecipeBook == true).SingleOrDefaultAsync();
 
                 UserMeal userMeal2 = await _context.UserMeal.Where(us => us.MealID == meal.MealID  && us.UserID == user.Id).SingleOrDefaultAsync();
@@ -462,9 +463,26 @@ namespace RecipeArchive.Controllers
                     } else {
                         ViewBag.Stars = false;
                     }
+
+                    if (userMeal2.Favourite == true)
+                    {
+                        ViewBag.Favourite = false;
+                    } else {
+                        ViewBag.Favourite = true;
+                    }
+
+                    if (userMeal2.AlreadyMade == true)
+                    {
+                        ViewBag.AlreadyMade = false;
+                    } else {
+                        ViewBag.AlreadyMade = true;
+                    }
+
                 } else {
                     ViewBag.Stars = true;
                     ViewBag.Ratings = ratingStars;
+                    ViewBag.Favourite = true;
+                    ViewBag.AlreadyMade = true;
                 }
 
                 if (userMeal != null && userMeal.UserID == user.Id)
@@ -477,6 +495,9 @@ namespace RecipeArchive.Controllers
             else
             {
                 ViewBag.owner = false;
+                ViewBag.Favourite = false;
+                ViewBag.AlreadyMade = false;
+                ViewBag.In = false;
             }
 
             return View(mealView);
