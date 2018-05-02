@@ -74,10 +74,12 @@ namespace RecipeArchive.Controllers
                     meal.Ingredients.Add(ingredient);
                     await _context.SaveChangesAsync();
                 }
-                return RedirectToAction(nameof(Details),"Meals",new { id = ingredient.MealID });
+                return RedirectToAction(nameof(Edit), "Ingredients", new { id = ingredient.IngredientID });
+                //return RedirectToAction(nameof(Details),"Meals",new { id = ingredient.MealID });
             }
             ViewData["MealID"] = new SelectList(_context.Meal, "MealID", "MealID", ingredient.MealID);
-            return View(ingredient);
+            ViewBag.MealID = ingredient.MealID;
+            return RedirectToAction(nameof(Details),"Meals",new { id = ingredient.MealID });
         }
 
         // GET: Ingredients/Edit/5
