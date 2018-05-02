@@ -26,6 +26,7 @@ namespace RecipeArchive.Models
         public DifficultyStates Difficulty { get; set; }
 
         [DisplayName("Name")]
+        [Required]
         public string Name { get; set; }
 
         [DisplayName("Time")]

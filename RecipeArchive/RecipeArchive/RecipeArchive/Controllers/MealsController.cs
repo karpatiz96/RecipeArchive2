@@ -38,15 +38,8 @@ namespace RecipeArchive.Controllers
 
             var meals = from m in _context.Meal
                         select m;
+
             meals = meals.Include(m => m.UserMeals).Include(m => m.MealType);
-            /*select new MealDTO()
-            {
-                MealID = m.MealID,
-                Name = m.Name,
-                Stars = m.UserMeals.Sum(um =>(float) (um.Stars)) / m.UserMeals.Count(us => us.Stars != null && us.Stars != 0),
-                MealTypeName = m.MealType.Name,
-                Picture = m.Picture
-            };*/
 
             List<MealDTO> mealDTOs = new List<MealDTO>();
 
@@ -83,20 +76,20 @@ namespace RecipeArchive.Controllers
         public async Task<IActionResult> Index()
         {
 
-            HomeMealViewModel homeMealViewModel = new HomeMealViewModel();
+            RecipeBookViewModel recipeBookViewModel = new RecipeBookViewModel();
 
             var mealTypes = from mt in _context.MealType
                             select mt;
 
-            homeMealViewModel.mealTypes = mealTypes;
-            homeMealViewModel.meals = new List<IEnumerable<MealDTO>>();
+            recipeBookViewModel.mealTypes = mealTypes;
+            recipeBookViewModel.meals = new List<IEnumerable<MealDTO>>();
 
             foreach (var type in mealTypes)
             {
-                homeMealViewModel.meals.Add(GetMeals(type.Name));
+                recipeBookViewModel.meals.Add(GetMeals(type.Name));
             }
 
-            return View(homeMealViewModel);
+            return View(recipeBookViewModel);
         }
 
         public IActionResult Filter() {
@@ -261,7 +254,7 @@ namespace RecipeArchive.Controllers
             ViewData["CurrentFilter"] = type;
 
             IAsyncEnumerable<MealDTO> meals = GetMeals(type).ToAsyncEnumerable();
-            int size = 3;
+            int size = 9;
             return View(await PaginatedList<MealDTO>.CreateAsync(meals, page ?? 1 , size));
         }
 
@@ -457,7 +450,7 @@ namespace RecipeArchive.Controllers
 
                 UserMeal userMeal2 = await _context.UserMeal.Where(us => us.MealID == meal.MealID  && us.UserID == user.Id).SingleOrDefaultAsync();
 
-                if (userMeal2 != null && (userMeal2.Stars != null || userMeal2.Stars == 0)) {
+                if (userMeal2 != null ) {
                     if (userMeal2.Stars != null && userMeal2.Stars <= 0) {
                         ViewBag.Stars = true;
                         ViewBag.Ratings = ratingStars;
@@ -500,7 +493,7 @@ namespace RecipeArchive.Controllers
 
             ViewBag.diffState = difficultyStates;
 
-            ViewData["MealTypeID"] = new SelectList(_context.MealType, "MealTypeID", "Name");
+            ViewBag.MealTypeID = new SelectList(_context.MealType, "MealTypeID", "Name");
             return View();
         }
 
@@ -568,7 +561,8 @@ namespace RecipeArchive.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MealTypeID"] = new SelectList(_context.MealType, "MealTypeID", "Name", meal.MealTypeID);
+
+            ViewBag.MealTypeID = new SelectList(_context.MealType, "MealTypeID", "Name", meal.MealTypeID);
             return View(meal);
         }
 
@@ -585,7 +579,9 @@ namespace RecipeArchive.Controllers
             {
                 return NotFound();
             }
-            ViewData["MealTypeID"] = new SelectList(_context.MealType, "MealTypeID", "Name", meal.MealTypeID);
+
+            ViewBag.MealTypeID = new SelectList(_context.MealType, "MealTypeID", "Name", meal.MealTypeID);
+
             return View(meal);
         }
 
@@ -654,7 +650,9 @@ namespace RecipeArchive.Controllers
                 }
                 return RedirectToAction(nameof(Details), new { id = id });
             }
-            ViewData["MealTypeID"] = new SelectList(_context.MealType, "MealTypeID", "MealTypeID", meal.MealTypeID);
+
+            ViewBag.MealTypeID = new SelectList(_context.MealType, "MealTypeID", "Name", meal.MealTypeID);
+
             return View(meal);
         }
 
