@@ -200,6 +200,8 @@ namespace RecipeArchive.Controllers
                     mealItems.Add(GetMealDTO(meal));
                 }
 
+                mealItems = mealItems.OrderByDescending(m => m.Stars).ToList();
+
                 IAsyncEnumerable<MealDTO> mealDTOs = mealItems.ToAsyncEnumerable();
 
                 return View(await PaginatedList<MealDTO>.CreateAsync(mealDTOs, page ?? 1, size));
@@ -239,6 +241,8 @@ namespace RecipeArchive.Controllers
                 mealItems.Add(GetMealDTO(meal));
             }
 
+            mealItems = mealItems.OrderByDescending(m => m.Stars).ToList();
+
             IAsyncEnumerable<MealDTO> mealDTOs = mealItems.ToAsyncEnumerable();
 
             return View(await PaginatedList<MealDTO>.CreateAsync(mealDTOs, page ?? 1, size));
@@ -258,7 +262,7 @@ namespace RecipeArchive.Controllers
 
             ViewData["CurrentFilter"] = type;
 
-            IAsyncEnumerable<MealDTO> meals = GetMeals(type).ToAsyncEnumerable();
+            IAsyncEnumerable<MealDTO> meals = GetMeals(type).OrderByDescending(m => m.Stars).ToAsyncEnumerable();
             int size = 9;
             return View(await PaginatedList<MealDTO>.CreateAsync(meals, page ?? 1 , size));
         }
@@ -283,6 +287,9 @@ namespace RecipeArchive.Controllers
                         meals.Add(GetMealDTO(userMeal.Meal));
                     }
                 }
+
+                meals = meals.OrderBy(m => m.Name).ToList();
+
                 recipeBookViewModel.meals.Add(meals);
             }
 
@@ -312,6 +319,9 @@ namespace RecipeArchive.Controllers
                         meals.Add(GetMealDTO(userMeal.Meal));
                     }
                 }
+
+                meals = meals.OrderBy(m => m.Name).ToList();
+
                 recipeBookViewModel.meals.Add(meals);
             }
 
@@ -341,6 +351,9 @@ namespace RecipeArchive.Controllers
                         meals.Add(GetMealDTO(userMeal.Meal));
                     }
                 }
+
+                meals = meals.OrderBy(m => m.Name).ToList();
+
                 recipeBookViewModel.meals.Add(meals);
             }
 
