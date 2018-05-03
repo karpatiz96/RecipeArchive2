@@ -541,19 +541,22 @@ namespace RecipeArchive.Controllers
                 _context.Add(meal);
                 await _context.SaveChangesAsync();
 
-                if (Picture != null && Picture.Length > 0) {
+                if (Picture != null && Picture.Length > 0)
+                {
 
                     var file = Picture;
                     var upload = Path.Combine(_hosting.WebRootPath, "images\\imgMeal");
                     var extension = Path.GetExtension(file.FileName);
                     var fileName = Path.GetFileName(file.FileName);
-                    if (file.Length > 0) {
+                    if (file.Length > 0)
+                    {
                         string name = Path.GetFileNameWithoutExtension(fileName);
                         string myfileName = name + '_' + meal.MealID + extension;
 
-                        using (var fileStream = new FileStream(Path.Combine(upload, myfileName), FileMode.Create)) {
+                        using (var fileStream = new FileStream(Path.Combine(upload, myfileName), FileMode.Create))
+                        {
                             await file.CopyToAsync(fileStream);
-                            meal.Picture = myfileName;//Path.Combine(upload, myfileName);
+                            meal.Picture = myfileName;
                             await _context.SaveChangesAsync();
                         }
                     }

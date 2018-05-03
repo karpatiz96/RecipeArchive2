@@ -9,7 +9,12 @@
 <div class="media">
     <div class="media-left">
         <a asp-controller="Meals" asp-action="Details" asp-route-id="@Model.MealID">
-            <img class="media-object" src="~/images/imgMeal/@Model.Picture" width="200" height="200">
+            @if (Model.Picture != null)
+            {
+                <img class="media-object" src="~/images/imgMeal/@Model.Picture" width="200" height="200">
+            } else { 
+                <img class="media-object" src="~/images/text.svg" width="200" height="200">
+            }
         </a>
     </div>
     <div class="media-body">
