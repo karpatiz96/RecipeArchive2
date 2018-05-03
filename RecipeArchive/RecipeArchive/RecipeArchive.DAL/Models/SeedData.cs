@@ -21,18 +21,30 @@ namespace RecipeArchive.DAL.Models
                 }
 
                 MealType salad = new MealType { Name = "Salad" };
-                MealType cake = new MealType { Name = "Cake" };
                 MealType soup = new MealType { Name = "Soup" };
+                MealType pasta = new MealType { Name = "Pasta" };
+                MealType fish = new MealType { Name = "Fish" };
+                MealType beef = new MealType { Name = "Beef" };
+                MealType chicken = new MealType { Name = "Chicken" };
+                MealType pork = new MealType { Name = "Pork" };
+                MealType dessert = new MealType { Name = "Dessert" };
+                MealType cake = new MealType { Name = "Cake" };
 
                 context.MealType.AddRange(
                     salad,
-                    cake,
-                    soup
+                    soup,
+                    pasta,
+                    fish,
+                    beef,
+                    chicken,
+                    pork,
+                    dessert,
+                    cake
                     );
 
                 context.SaveChanges();
 
-                Meal meal11 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = salad, Name = "meal11", Picture = "text_0.svg" };
+                /*Meal meal11 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = salad, Name = "meal11", Picture = "text_0.svg" };
                 Meal meal12 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = salad, Name = "meal12", Picture = "text_0.svg" };
                 Meal meal13 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = salad, Name = "meal13", Picture = "text_0.svg" };
                 Meal meal21 = new Meal { Difficulty = Meal.DifficultyStates.Easy, Description = "desc", MealType = cake, Name = "meal21", Picture = "text_0.svg" };
@@ -78,7 +90,7 @@ namespace RecipeArchive.DAL.Models
                 meal32.UserMeals.Add(userMeal32);
                 meal33.UserMeals.Add(userMeal33);
 
-                context.SaveChanges();
+                context.SaveChanges();*/
             }
         }
     }
