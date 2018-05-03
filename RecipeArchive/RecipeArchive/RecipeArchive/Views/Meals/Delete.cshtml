@@ -1,57 +1,101 @@
-﻿@model RecipeArchive.Models.Meal
+﻿@model RecipeArchive.Models.DataViewModels.MealViewModel
 
 @{
     ViewData["Title"] = "Delete";
 }
 
-<h2>Delete</h2>
+<h2>Delete Meal</h2>
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Meal</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Difficulty)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Difficulty)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.MakeTime)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.MakeTime)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Picture)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Picture)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.MealType)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.MealType.MealTypeID)
-        </dd>
-    </dl>
-    
+    <div class="media">
+        <div class="media-left">
+            <a asp-controller="Meals" asp-action="Details" asp-route-id="@Model.MealID">
+                @if (Model.Picture != null)
+                {
+                    <img class="media-object" src="~/images/imgMeal/@Model.Picture" width="200" height="200">
+                }
+                else
+                {
+                    <img class="media-object" src="~/images/text.svg" width="200" height="200">
+                }
+            </a>
+        </div>
+        <div class="media-body">
+            <div class="container">
+                <div class="row">
+                    <label class="col-md-1"><b>Name:</b> </label>
+                    <div class="col-md-11">
+                        <p>@Model.Name</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-md-1"><b>Type:</b> </label>
+                    <div class="col-md-2">
+                        <p>@Model.MealTypeName</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-md-1"><b>Difficulty:</b> </label>
+                    <div class="col-md-2">
+                        <p>@Model.Difficulty</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-md-1"><b>Time:</b> </label>
+                    <div class="col-md-2">
+                        <p>@Model.MakeTime</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-md-1"><b>Ratings:</b> </label>
+                    <div class="col-md-2">
+                        <p>@Model.Stars</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Preparation</h3>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <p>@Model.Description</p>
+        </div>
+    </div>
+    <hr />
+    <h3>Ingredients</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50%">Name</th>
+                            <th style="width: 20%">Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var ingredient in Model.Ingredients)
+                        {
+                            <tr>
+                                <td style="width: 50%">
+                                    @ingredient.Name
+                                </td>
+                                <td style="width: 20%">
+                                    @ingredient.Quantity
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <hr />
     <form asp-action="Delete">
-        <input type="hidden" asp-for="MealID" />
-        <input type="submit" value="Delete" class="btn btn-default" /> |
-        <a asp-action="Details" asp-controller="Meals" asp-route-id="@Model.MealID">Back to Meal</a>
+        <input type="hidden" asp-for="MealID" value="@Model.MealID" />
+        <input type="submit" value="Delete" class="btn btn-default" />
+        <a asp-action="Details" asp-controller="Meals" asp-route-id="@Model.MealID" class="btn btn-default">Back</a>
     </form>
 </div>

@@ -693,15 +693,39 @@ namespace RecipeArchive.Controllers
                 return NotFound();
             }
 
+            ApplicationUser user = await _userManager.GetUserAsync(HttpContext.User);
+
             var meal = await _context.Meal
                 .Include(m => m.MealType)
+                .Include(m => m.UserMeals)
                 .SingleOrDefaultAsync(m => m.MealID == id);
+
+            var Ingredients = await _context.Ingredient.Where(i => i.MealID == id).ToListAsync();
+
+            int count = meal.UserMeals.Count(us => us.Stars != null && us.Stars != 0);
+            if (count <= 0)
+            {
+                count = 1;
+            }
+
+            MealViewModel mealView = new MealViewModel();
+
+            mealView.Ingredients = Ingredients;
+            mealView.Description = meal.Description;
+            mealView.Difficulty = meal.Difficulty;
+            mealView.MakeTime = meal.MakeTime;
+            mealView.MealID = meal.MealID;
+            mealView.MealTypeName = meal.MealType.Name;
+            mealView.Name = meal.Name;
+            mealView.Picture = meal.Picture;
+            mealView.Stars = meal.UserMeals.Sum(um => (float)(um.Stars)) / count;
+
             if (meal == null)
             {
                 return NotFound();
             }
 
-            return View(meal);
+            return View(mealView);
         }
 
         // POST: Meals/Delete/5
