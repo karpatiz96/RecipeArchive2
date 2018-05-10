@@ -16,5 +16,9 @@ namespace RecipeArchive.Models
         public float Stars { get; set; }
 
         public string Picture { get; set; }
+
+        public int MakeTime { get; set; }
+
+        public string DifficultyName { get; set; }
     }
 }

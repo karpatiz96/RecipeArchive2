@@ -62,12 +62,18 @@ namespace RecipeArchive.Controllers
             if (count <= 0) {
                 count = 1;
             }
+            int makeTime = 0;
+            if (meal.MakeTime != null) {
+                makeTime = (int)meal.MakeTime;
+            }
             MealDTO mealDTO = new MealDTO {
                 MealID = meal.MealID,
                 Name = meal.Name,
                 Stars = meal.UserMeals.Sum(um => (float)(um.Stars)) / count,
                 MealTypeName = meal.MealType.Name,
-                Picture = meal.Picture
+                Picture = meal.Picture,
+                MakeTime = makeTime,
+                DifficultyName = meal.Difficulty.ToString()
             };
             return mealDTO;
         }
